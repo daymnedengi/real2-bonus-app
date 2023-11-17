@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 import { useMenuStore, selectToggleMenu, selectShowMenu } from "../store/menuStore";
 import { useNavigationStore, selectNavigate } from "../store/navigationStore";
+import { useLocalUserStore, selectLogout } from "../store/localUserStore";
 
 // @ts-ignore
 import MenuCloseImageSource from "../assets/menu-close.png";
@@ -52,8 +53,8 @@ const styles = StyleSheet.create({
 export default function Main(): JSX.Element {
     const showMenu = useMenuStore(selectShowMenu);
     const toggleMenu = useMenuStore(selectToggleMenu);
-
     const navigate = useNavigationStore(selectNavigate);
+    const localUserLogout = useLocalUserStore(selectLogout);
 
     function goto(path: string) {
         toggleMenu(false);
@@ -82,7 +83,13 @@ export default function Main(): JSX.Element {
                     <Image source={MenuSettingsImageSource} />
                     <Text style={styles.itemText}>Настройки</Text>
                 </Pressable>
-                <Pressable style={styles.item} onPress={() => goto("/login")}>
+                <Pressable
+                    style={styles.item}
+                    onPress={() => {
+                        localUserLogout();
+                        goto("");
+                    }}
+                >
                     <Image source={MenuLogoutImageSource} />
                     <Text style={styles.itemText}>Выход</Text>
                 </Pressable>

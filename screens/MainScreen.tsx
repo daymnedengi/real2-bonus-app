@@ -1,5 +1,4 @@
 import { StyleSheet, View, Text, Image } from "react-native";
-import notificationService from "../services/notificationService";
 
 // @ts-ignore
 import Real2CoinImageSource from "../assets/coin.png";
