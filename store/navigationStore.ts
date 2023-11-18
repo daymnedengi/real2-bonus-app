@@ -1,23 +1,17 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
+import { makeAutoObservable } from "mobx";
 
-interface NavigationStore {
-    pathName: string;
-    navigate: (path: string) => void;
+class NavigationStore {
+    pathName: string = "";
+
+    constructor() {
+        makeAutoObservable(this);
+    }
+
+    navigate(path: string) {
+        this.pathName = path;
+    }
 }
 
-const useNavigationStore = create<NavigationStore>()(
-    immer((set) => ({
-        pathName: "/",
-        navigate: (path: string) => {
-            set((state) => {
-                state.pathName = path;
-            });
-        },
-    }))
-);
+const navigationStore = new NavigationStore();
 
-const selectPathName = (state: NavigationStore) => state.pathName;
-const selectNavigate = (state: NavigationStore) => state.navigate;
-
-export { useNavigationStore, selectPathName, selectNavigate };
+export default navigationStore;

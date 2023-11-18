@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import { StyleSheet, View, Image, Pressable, Text } from "react-native";
 
 import RegForm from "../components/RegForm";
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     },
 });
 
-function LoginScreenSwitch(props: LoginScreenSwitchProps): JSX.Element {
+const LoginScreenSwitch: FC<LoginScreenSwitchProps> = (props: LoginScreenSwitchProps): JSX.Element => {
     return (
         <View style={styles.screenSwitch}>
             <Pressable
@@ -71,9 +71,9 @@ function LoginScreenSwitch(props: LoginScreenSwitchProps): JSX.Element {
             </Pressable>
         </View>
     );
-}
+};
 
-export default function LoginScreen(): JSX.Element {
+const LoginScreen: FC = (): JSX.Element => {
     const [isAuth, setIsAuth] = useState<boolean>(true);
 
     return (
@@ -84,4 +84,6 @@ export default function LoginScreen(): JSX.Element {
             {isAuth && <AuthForm />}
         </View>
     );
-}
+};
+
+export default LoginScreen;

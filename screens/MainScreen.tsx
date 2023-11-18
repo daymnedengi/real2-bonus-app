@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 
 // @ts-ignore
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function MainScreen(): JSX.Element {
+const MainScreen: FC = (): JSX.Element => {
     return (
         <View style={styles.container}>
             <View style={styles.block}>
@@ -37,4 +38,6 @@ export default function MainScreen(): JSX.Element {
             </View>
         </View>
     );
-}
+};
+
+export default MainScreen;

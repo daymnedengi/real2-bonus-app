@@ -1,7 +1,9 @@
+import { FC } from "react";
 import { StyleSheet, View, Text, Image, Pressable } from "react-native";
-import { useMenuStore, selectToggleMenu, selectShowMenu } from "../store/menuStore";
-import { useNavigationStore, selectNavigate } from "../store/navigationStore";
-import { useLocalUserStore, selectLogout } from "../store/localUserStore";
+import { observer } from "mobx-react-lite";
+import menuStore from "../store/menuStore";
+import navigationStore from "../store/navigationStore";
+import localUserStore from "../store/localUserStore";
 
 // @ts-ignore
 import MenuCloseImageSource from "../assets/menu-close.png";
@@ -50,25 +52,20 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function Main(): JSX.Element {
-    const showMenu = useMenuStore(selectShowMenu);
-    const toggleMenu = useMenuStore(selectToggleMenu);
-    const navigate = useNavigationStore(selectNavigate);
-    const localUserLogout = useLocalUserStore(selectLogout);
-
+const Menu: FC = observer((): JSX.Element => {
     function goto(path: string) {
-        toggleMenu(false);
-        navigate(path);
+        menuStore.toggleMenu(false);
+        navigationStore.navigate(path);
     }
 
-    if (!showMenu) {
+    if (!menuStore.showMenu) {
         return null;
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.block}>
-                <Pressable style={styles.closeButton} onPress={() => toggleMenu(false)}>
+                <Pressable style={styles.closeButton} onPress={() => menuStore.toggleMenu(false)}>
                     <Image source={MenuCloseImageSource} />
                 </Pressable>
                 <Pressable style={styles.item} onPress={() => goto("/")}>
@@ -86,7 +83,7 @@ export default function Main(): JSX.Element {
                 <Pressable
                     style={styles.item}
                     onPress={() => {
-                        localUserLogout();
+                        localUserStore.logout();
                         goto("");
                     }}
                 >
@@ -96,4 +93,6 @@ export default function Main(): JSX.Element {
             </View>
         </View>
     );
-}
+});
+
+export default Menu;

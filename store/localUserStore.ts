@@ -1,4 +1,4 @@
-import { create } from "zustand";
+/*import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 interface LocalUserStore {
@@ -31,4 +31,29 @@ const selectIsAuth = (state: LocalUserStore) => state.isAuth;
 const selectLogin = (state: LocalUserStore) => state.login;
 const selectLogout = (state: LocalUserStore) => state.logout;
 
-export { useLocalUserStore, selectIsAuth, selectLogin, selectLogout };
+export { useLocalUserStore, selectIsAuth, selectLogin, selectLogout };*/
+
+import { makeAutoObservable } from "mobx";
+
+class LocalUserStore {
+    authToken: string = "";
+    isAuth: boolean = false;
+
+    constructor() {
+        makeAutoObservable(this);
+    }
+
+    login(token: string) {
+        this.authToken = token;
+        this.isAuth = true;
+    }
+
+    logout() {
+        this.authToken = "";
+        this.isAuth = false;
+    }
+}
+
+const localUserStore = new LocalUserStore();
+
+export default localUserStore;

@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { StyleSheet, View, Text, TextInput, Pressable, ScrollView } from "react-native";
 
 const styles = StyleSheet.create({
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function RegForm(): JSX.Element {
+const RegForm: FC = (): JSX.Element => {
     return (
         <View style={styles.container}>
             <ScrollView>
@@ -60,4 +61,6 @@ export default function RegForm(): JSX.Element {
             </ScrollView>
         </View>
     );
-}
+};
+
+export default RegForm;

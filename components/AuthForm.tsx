@@ -1,6 +1,7 @@
+import { FC, useState, useEffect } from "react";
 import { StyleSheet, View, Text, TextInput, Pressable, ScrollView } from "react-native";
-import { useLocalUserStore, selectLogin } from "../store/localUserStore";
-import { useNavigationStore, selectNavigate } from "../store/navigationStore";
+import socketAPI from "../api/socketAPI";
+import { PayloadLogin, PayloadLoginResponse, SocketMessage, SocketMessageType } from "../types/socketAPITypes";
 
 const styles = StyleSheet.create({
     container: {
@@ -38,33 +39,51 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function AuthForm(): JSX.Element {
-    const localUserLogin = useLocalUserStore(selectLogin);
-    const navigate = useNavigationStore(selectNavigate);
+const AuthForm: FC = (): JSX.Element => {
+    const [userName, setUserName] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+
+    function buttonPressHandler() {
+        if (userName && password) {
+            socketAPI.sendMessage({
+                type: SocketMessageType.LOGIN,
+                payload: {
+                    userName: userName,
+                    password: password,
+                } as PayloadLogin,
+            });
+        }
+    }
 
     return (
         <View style={styles.container}>
             <ScrollView>
                 <View style={styles.row}>
                     <Text style={styles.label}>Имя пользователя:</Text>
-                    <TextInput style={styles.inputField} />
+                    <TextInput
+                        style={styles.inputField}
+                        cursorColor={"black"}
+                        value={userName}
+                        onChangeText={(text) => setUserName(text)}
+                    />
                 </View>
                 <View style={styles.row}>
                     <Text style={styles.label}>Пароль:</Text>
-                    <TextInput style={styles.inputField} />
+                    <TextInput
+                        style={styles.inputField}
+                        cursorColor={"black"}
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
+                    />
                 </View>
                 <View style={styles.row}>
-                    <Pressable
-                        style={styles.button}
-                        onPress={() => {
-                            localUserLogin("asdsad");
-                            navigate("/");
-                        }}
-                    >
+                    <Pressable style={styles.button} onPress={buttonPressHandler}>
                         <Text style={styles.buttonText}>Войти</Text>
                     </Pressable>
                 </View>
             </ScrollView>
         </View>
     );
-}
+};
+
+export default AuthForm;

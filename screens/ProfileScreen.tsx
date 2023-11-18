@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { StyleSheet, View, Text, Image, ScrollView } from "react-native";
 
 const styles = StyleSheet.create({
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function ProfileScreen(): JSX.Element {
+const ProfileScreen: FC = (): JSX.Element => {
     return (
         <View style={styles.container}>
             <View style={styles.head}>
@@ -75,4 +76,6 @@ export default function ProfileScreen(): JSX.Element {
             </View>
         </View>
     );
-}
+};
+
+export default ProfileScreen;

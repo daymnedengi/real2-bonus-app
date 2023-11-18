@@ -79,9 +79,10 @@ class SocketAPI {
 
     public sendMessage(message: SocketMessage): void {
         this.outcomingMessageListeners.forEach((listener) => listener(message));
+        this.socket.send(JSON.stringify(message));
     }
 }
 
 const socketAPI = new SocketAPI();
 
-export { socketAPI };
+export default socketAPI;

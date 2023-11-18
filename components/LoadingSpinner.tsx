@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { FC, useEffect, useState, useRef } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 
 const styles = StyleSheet.create({
@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        position: "relative",
     },
     wrapper: {
         width: 80,
@@ -17,20 +16,18 @@ const styles = StyleSheet.create({
     loader: {
         width: "100%",
         height: "100%",
-        position: "relative",
+        justifyContent: "center",
+        alignItems: "center",
         backgroundColor: "#ee3124",
     },
     text: {
-        position: "absolute",
-        top: -7,
-        left: 22,
         color: "white",
         fontSize: 64,
         fontWeight: "bold",
     },
 });
 
-export default function LoadingSpinner() {
+const LoadingSpinner: FC = (): JSX.Element => {
     const [_, setUpdate] = useState<boolean>(false);
     const text = useRef<string>("");
     const translateY = useRef<number>(0);
@@ -81,7 +78,7 @@ export default function LoadingSpinner() {
                 <Pressable
                     onPress={() => {
                         if (text.current == "") {
-                            text.current = "Перестань по мне кликать!";
+                            text.current = "Перестань тапать по мне!";
                             setTimeout(() => {
                                 text.current = "";
                             }, 3000);
@@ -95,4 +92,6 @@ export default function LoadingSpinner() {
             </View>
         </View>
     );
-}
+};
+
+export default LoadingSpinner;

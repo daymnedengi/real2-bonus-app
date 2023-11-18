@@ -1,23 +1,17 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
+import { makeAutoObservable } from "mobx";
 
-interface MenuStore {
-    showMenu: boolean;
-    toggleMenu: (value: boolean) => void;
+class MenuStore {
+    showMenu: boolean = false;
+
+    constructor() {
+        makeAutoObservable(this);
+    }
+
+    toggleMenu(value: boolean) {
+        this.showMenu = value;
+    }
 }
 
-const useMenuStore = create<MenuStore>()(
-    immer((set) => ({
-        showMenu: false,
-        toggleMenu: (value) => {
-            set((state) => {
-                state.showMenu = value;
-            });
-        },
-    }))
-);
+const menuStore = new MenuStore();
 
-const selectShowMenu = (state: MenuStore) => state.showMenu;
-const selectToggleMenu = (state: MenuStore) => state.toggleMenu;
-
-export { useMenuStore, selectShowMenu, selectToggleMenu };
+export default menuStore;

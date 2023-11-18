@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { StyleSheet, View, Text, Pressable, TextInput } from "react-native";
 
 const styles = StyleSheet.create({
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function SettingsScreen(): JSX.Element {
+const SettingsScreen: FC = (): JSX.Element => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Настройки</Text>
@@ -90,4 +91,6 @@ export default function SettingsScreen(): JSX.Element {
             </View>
         </View>
     );
-}
+};
+
+export default SettingsScreen;

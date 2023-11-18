@@ -1,5 +1,6 @@
+import { FC } from "react";
 import { StyleSheet, View, Pressable, Text, Image } from "react-native";
-import { useMenuStore, selectToggleMenu } from "../store/menuStore";
+import menuStore from "../store/menuStore";
 
 // @ts-ignore
 import MenuShowImageSource from "../assets/menu-show.png";
@@ -28,16 +29,16 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function Header(): JSX.Element {
-    const toggleMenu = useMenuStore(selectToggleMenu);
-
+const Header: FC = (): JSX.Element => {
     return (
         <View style={styles.container}>
-            <Pressable style={styles.menuShowButton} onPress={() => toggleMenu(true)}>
+            <Pressable style={styles.menuShowButton} onPress={() => menuStore.toggleMenu(true)}>
                 <Image source={MenuShowImageSource} />
             </Pressable>
             <Text style={[styles.text, { marginLeft: 20 }]}>The Real</Text>
             <Image style={styles.miniLogo} source={Real2MiniLogoImageSource} />
         </View>
     );
-}
+};
+
+export default Header;
