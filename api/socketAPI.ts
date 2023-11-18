@@ -1,40 +1,18 @@
-export enum SocketMessageType {
-    LOGIN = "LOGIN",
-    LOGIN_RESPONSE = "LOGIN_RESPONSE",
-    INCOMING_PUSH_NOTIFICATION = "INCOMING_PUSH_NOTIFICATION",
-}
+import { SocketMessage } from "../types/socketAPITypes";
 
-export interface PayloadLogin {
-    userName: string;
-    password: string;
-}
-
-export interface PayloadLoginResponse {
-    success: boolean;
-    token: string | null;
-}
-
-export interface PayloadIncomingPushNotification {
-    title: string;
-    body: string;
-}
-
-export interface SocketMessage {
-    type: SocketMessageType;
-    payload: null | PayloadLogin | PayloadLoginResponse | PayloadIncomingPushNotification;
-}
-
+type SocketConnectionOpenListener = () => void;
 type SocketConnectionCloseListener = () => void;
 type SocketMessageListener = (message: SocketMessage) => void;
 
 class SocketAPI {
-    private socket: WebSocket;
+    private socket: WebSocket | null;
+    private connectionOpenListeners: SocketConnectionOpenListener[];
     private connectionCloseListeners: SocketConnectionCloseListener[];
     private incomingMessageListeners: SocketMessageListener[];
     private outcomingMessageListeners: SocketMessageListener[];
 
     constructor() {
-        this.socket = this.createSocket();
+        this.connectionOpenListeners = [];
         this.connectionCloseListeners = [];
         this.incomingMessageListeners = [];
         this.outcomingMessageListeners = [];
@@ -43,20 +21,36 @@ class SocketAPI {
     private createSocket(): WebSocket {
         const socket = new WebSocket("ws://192.168.220.142:5665");
 
+        socket.onopen = () => {
+            this.connectionOpenListeners.forEach((listener) => listener());
+        };
+
         socket.onclose = () => {
             this.connectionCloseListeners.forEach((listener) => listener());
         };
 
         socket.onmessage = (e) => {
             try {
-                console.log("new message");
-                console.log(e.data);
                 const message = JSON.parse(e.data) as SocketMessage;
                 this.incomingMessageListeners.forEach((listener) => listener(message));
             } catch {}
         };
 
         return socket;
+    }
+
+    public connectToServer() {
+        if (this.socket == null) {
+            this.socket = this.createSocket();
+        }
+    }
+
+    public addConnectionOpenListener(listener: SocketConnectionOpenListener): void {
+        this.connectionOpenListeners.push(listener);
+    }
+
+    public removeConnectionOpenListener(listener: SocketConnectionOpenListener): void {
+        this.connectionOpenListeners = this.connectionOpenListeners.filter((_listener) => _listener != listener);
     }
 
     public addConnectionCloseListener(listener: SocketConnectionCloseListener): void {
