@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import { StyleSheet, View, Text, TextInput, Pressable, ScrollView } from "react-native";
 import socketAPI from "../api/socketAPI";
-import { PayloadLogin, PayloadLoginResponse, SocketMessage, SocketMessageType } from "../types/socketAPITypes";
+import { SocketMessageType, PayloadAuth } from "../types/socketAPITypes";
 
 const styles = StyleSheet.create({
     container: {
@@ -46,11 +46,11 @@ const AuthForm: FC = (): JSX.Element => {
     function buttonPressHandler() {
         if (userName && password) {
             socketAPI.sendMessage({
-                type: SocketMessageType.LOGIN,
+                type: SocketMessageType.AUTH,
                 payload: {
                     userName: userName,
                     password: password,
-                } as PayloadLogin,
+                } as PayloadAuth,
             });
         }
     }

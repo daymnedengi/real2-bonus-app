@@ -1,5 +1,8 @@
-import { FC, useEffect, useState, useRef } from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { FC, useRef, useEffect } from "react";
+import { StyleSheet, View, Image, Animated, Easing } from "react-native";
+
+// @ts-ignore
+import Real2Logo2ImageSource from "../assets/real2-logo2.png";
 
 const styles = StyleSheet.create({
     container: {
@@ -13,83 +16,82 @@ const styles = StyleSheet.create({
         borderRadius: 90,
         overflow: "hidden",
     },
-    loader: {
+    logoImage: {
         width: "100%",
         height: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#ee3124",
-    },
-    text: {
-        color: "white",
-        fontSize: 64,
-        fontWeight: "bold",
     },
 });
 
 const LoadingSpinner: FC = (): JSX.Element => {
-    const [_, setUpdate] = useState<boolean>(false);
-    const text = useRef<string>("");
-    const translateY = useRef<number>(0);
-    const translateYVelocity = useRef<number>(5);
-    const rotateZ = useRef<number>(0);
-    const scaleY = useRef<number>(1.0);
+    const translateAnimatedValue = useRef(new Animated.Value(0)).current;
+    const rotateAnimatedValue = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            if (translateY.current > 200) {
-                translateYVelocity.current -= 5;
-            }
-            translateYVelocity.current += 0.2;
-            translateY.current += translateYVelocity.current;
-
-            rotateZ.current -= 1;
-            if (rotateZ.current < -360) {
-                rotateZ.current += 360;
-            }
-
-            if (translateY.current > 200) {
-                scaleY.current = 0.6;
-            }
-
-            scaleY.current += 0.05;
-
-            if (scaleY.current > 1.0) {
-                scaleY.current = 1.0;
-            }
-
-            setUpdate((prevState) => !prevState);
-        }, 16);
-
-        return () => {
-            clearInterval(intervalId);
-        };
+        Animated.loop(
+            Animated.parallel([
+                Animated.sequence([
+                    Animated.timing(translateAnimatedValue, {
+                        toValue: 1,
+                        duration: 700,
+                        easing: Easing.in(Easing.sin),
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(translateAnimatedValue, {
+                        toValue: 0,
+                        duration: 700,
+                        easing: Easing.out(Easing.sin),
+                        useNativeDriver: true,
+                    }),
+                ]),
+                Animated.timing(rotateAnimatedValue, {
+                    toValue: 1,
+                    duration: 1400,
+                    useNativeDriver: true,
+                }),
+            ])
+        ).start();
     }, []);
 
     return (
         <View style={styles.container}>
-            <Text style={{ transform: [{ translateY: translateY.current - 10 }] }}>{text.current}</Text>
-            <View
+            <Animated.View
                 style={[
                     styles.wrapper,
-                    { transform: [{ translateY: translateY.current }, { scaleY: scaleY.current }] },
+                    {
+                        transform: [
+                            {
+                                translateY: translateAnimatedValue.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [0, 300],
+                                }),
+                            },
+                            {
+                                scaleY: translateAnimatedValue.interpolate({
+                                    inputRange: [0, 0.8, 1],
+                                    outputRange: [1.0, 1.0, 0.5],
+                                }),
+                            },
+                        ],
+                    },
                 ]}
             >
-                <Pressable
-                    onPress={() => {
-                        if (text.current == "") {
-                            text.current = "Перестань тапать по мне!";
-                            setTimeout(() => {
-                                text.current = "";
-                            }, 3000);
-                        }
-                    }}
-                >
-                    <View style={[styles.loader, { transform: [{ rotateZ: `${rotateZ.current}deg` }] }]}>
-                        <Text style={styles.text}>2</Text>
-                    </View>
-                </Pressable>
-            </View>
+                <Animated.Image
+                    style={[
+                        styles.logoImage,
+                        {
+                            transform: [
+                                {
+                                    rotateZ: rotateAnimatedValue.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: ["0deg", "360deg"],
+                                    }),
+                                },
+                            ],
+                        },
+                    ]}
+                    source={Real2Logo2ImageSource}
+                />
+            </Animated.View>
         </View>
     );
 };
