@@ -38,7 +38,7 @@ const NavMenu: FC = observer((): JSX.Element => {
             <View
                 style={
                     navigationStore.pathName == "/"
-                        ? [styles.item, { borderTopColor: "rgb(230, 230, 0)" }]
+                        ? [styles.item, { borderTopColor: "rgb(255, 224, 64)" }]
                         : styles.item
                 }
             >
@@ -46,7 +46,7 @@ const NavMenu: FC = observer((): JSX.Element => {
                     <Image
                         style={
                             navigationStore.pathName == "/"
-                                ? [styles.image, { tintColor: "rgb(230, 230, 0)" }]
+                                ? [styles.image, { tintColor: "rgb(255, 224, 64)" }]
                                 : styles.image
                         }
                         source={NavMenuHomeImageSource}
@@ -56,7 +56,7 @@ const NavMenu: FC = observer((): JSX.Element => {
             <View
                 style={
                     navigationStore.pathName.startsWith("/notifications")
-                        ? [styles.item, { borderTopColor: "rgb(230, 230, 0)" }]
+                        ? [styles.item, { borderTopColor: "rgb(255, 224, 64)" }]
                         : styles.item
                 }
             >
@@ -64,7 +64,7 @@ const NavMenu: FC = observer((): JSX.Element => {
                     <Image
                         style={
                             navigationStore.pathName.startsWith("/notifications")
-                                ? [styles.image, { tintColor: "rgb(230, 230, 0)" }]
+                                ? [styles.image, { tintColor: "rgb(255, 224, 64)" }]
                                 : styles.image
                         }
                         source={NavMenuBellImageSource}
@@ -74,7 +74,7 @@ const NavMenu: FC = observer((): JSX.Element => {
             <View
                 style={
                     navigationStore.pathName.startsWith("/profile")
-                        ? [styles.item, { borderTopColor: "rgb(230, 230, 0)" }]
+                        ? [styles.item, { borderTopColor: "rgb(255, 224, 64)" }]
                         : styles.item
                 }
             >
@@ -82,7 +82,7 @@ const NavMenu: FC = observer((): JSX.Element => {
                     <Image
                         style={
                             navigationStore.pathName.startsWith("/profile")
-                                ? [styles.image, { tintColor: "rgb(230, 230, 0)" }]
+                                ? [styles.image, { tintColor: "rgb(255, 224, 64)" }]
                                 : styles.image
                         }
                         source={NavMenuUserImageSource}

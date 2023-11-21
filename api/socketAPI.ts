@@ -30,7 +30,6 @@ class SocketAPI {
         };
 
         socket.onmessage = (e) => {
-            console.log("on message");
             try {
                 console.log(e.data);
                 const message = JSON.parse(e.data) as SocketMessage;
