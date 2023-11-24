@@ -1,15 +1,22 @@
 import { FC, useState, useRef } from "react";
-import { StyleSheet, View, Text, TextInput, Pressable } from "react-native";
+import { StyleSheet, View, Text, TextInput, Pressable, ScrollView } from "react-native";
 import { observer } from "mobx-react-lite";
 
-import loginStore from "../store/loginStore";
+import navigationStore from "../store/navigationStore";
+
+interface CheckPhoneNumberProps {
+    phoneNumber: string;
+    setPhoneNumber: (value: string) => void;
+}
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
         padding: 20,
+    },
+    scrollViewWrapper: {
+        flexGrow: 1,
+        justifyContent: "center",
     },
     title: {
         textAlign: "center",
@@ -60,7 +67,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const CheckPhoneNumber: FC = observer((): JSX.Element => {
+const CheckPhoneNumber: FC<CheckPhoneNumberProps> = observer((props): JSX.Element => {
     const [isPhoneNumberError, setIsPhoneNumberError] = useState<boolean>(false);
     const prevPhoneNumberLength = useRef<number>(0);
 
@@ -93,7 +100,7 @@ const CheckPhoneNumber: FC = observer((): JSX.Element => {
     }
 
     function sendSMSCode() {
-        const number = loginStore.phoneNumber.replace(/\D/g, "");
+        const number = props.phoneNumber.replace(/\D/g, "");
 
         if (number.search(/^9[0-9]{9}$/) == -1) {
             setIsPhoneNumberError(true);
@@ -104,37 +111,39 @@ const CheckPhoneNumber: FC = observer((): JSX.Element => {
             setIsPhoneNumberError(false);
         }
 
-        loginStore.setStage("PHONE_NUMBER_CONFIRMATION");
+        navigationStore.navigate("/login/phoneNumberConfirmation");
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Вход</Text>
-            <Text style={styles.description}>
-                Введите ваш номер телефона, на указанный номер придет СМС-код для подтверждения входа
-            </Text>
-            <View
-                style={
-                    isPhoneNumberError
-                        ? [styles.inputFieldBlock, { borderWidth: 1, borderColor: "#ED1C24" }]
-                        : styles.inputFieldBlock
-                }
-            >
-                <Text style={styles.inputFieldLabel}>+7</Text>
-                <TextInput
-                    style={styles.inputField}
-                    placeholder="(999) 000-00-00"
-                    placeholderTextColor={"rgb(200, 200, 200)"}
-                    inputMode="tel"
-                    maxLength={15}
-                    value={loginStore.phoneNumber}
-                    onChangeText={(text) => loginStore.setPhoneNumber(formatingPhoneNumber(text))}
-                />
-            </View>
-            {isPhoneNumberError && <Text style={styles.inputFieldError}>Неверный номер телефона</Text>}
-            <Pressable style={styles.button} onPress={sendSMSCode}>
-                <Text style={styles.buttonText}>ПОЛУЧИТЬ СМС-КОД</Text>
-            </Pressable>
+            <ScrollView contentContainerStyle={styles.scrollViewWrapper}>
+                <Text style={styles.title}>Вход</Text>
+                <Text style={styles.description}>
+                    Введите ваш номер телефона, на указанный номер придет СМС-код для подтверждения входа
+                </Text>
+                <View
+                    style={
+                        isPhoneNumberError
+                            ? [styles.inputFieldBlock, { borderWidth: 1, borderColor: "#ED1C24" }]
+                            : styles.inputFieldBlock
+                    }
+                >
+                    <Text style={styles.inputFieldLabel}>+7</Text>
+                    <TextInput
+                        style={styles.inputField}
+                        placeholder="(999) 000-00-00"
+                        placeholderTextColor={"rgb(200, 200, 200)"}
+                        inputMode="tel"
+                        maxLength={15}
+                        value={props.phoneNumber}
+                        onChangeText={(text) => props.setPhoneNumber(formatingPhoneNumber(text))}
+                    />
+                </View>
+                {isPhoneNumberError && <Text style={styles.inputFieldError}>Неверный номер телефона</Text>}
+                <Pressable style={styles.button} onPress={sendSMSCode}>
+                    <Text style={styles.buttonText}>ПОЛУЧИТЬ СМС-КОД</Text>
+                </Pressable>
+            </ScrollView>
         </View>
     );
 });

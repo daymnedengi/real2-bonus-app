@@ -1,15 +1,21 @@
 import { FC, useState } from "react";
-import { StyleSheet, View, Text, TextInput, Pressable } from "react-native";
+import { StyleSheet, View, Text, TextInput, Pressable, ScrollView } from "react-native";
 import { observer } from "mobx-react-lite";
 
-import loginStore from "../store/loginStore";
+import navigationStore from "../store/navigationStore";
+
+interface PhoneNumberConfirmationProps {
+    phoneNumber: string;
+}
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        alignContent: "center",
         padding: 20,
+    },
+    scrollViewWrapper: {
+        flexGrow: 1,
+        justifyContent: "center",
     },
     title: {
         textAlign: "center",
@@ -54,43 +60,45 @@ const styles = StyleSheet.create({
     },
 });
 
-const PhoneNumberConfirmation: FC = observer((): JSX.Element => {
+const PhoneNumberConfirmation: FC<PhoneNumberConfirmationProps> = observer((props): JSX.Element => {
     const [isCodeError, setIsCodeError] = useState<boolean>(false);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Вход</Text>
-            <Text style={styles.description}>Код подтверждения отправлен на номер +7 {loginStore.phoneNumber}</Text>
-            <TextInput
-                style={isCodeError ? [styles.inputField, { borderColor: "#ED1C24" }] : styles.inputField}
-                placeholder="Введите код подтверждения"
-                placeholderTextColor="#999B9E"
-                inputMode="numeric"
-                maxLength={4}
-            />
-            {isCodeError && <Text style={styles.inputFieldError}>Неверный код</Text>}
-            <Text style={[styles.description, { marginTop: 25, color: "#5D5E60" }]}>
-                Обратите внимание, что иногда СМС приходят с задержкой
-            </Text>
-            <Pressable
-                style={styles.button}
-                onPress={() => {
-                    setIsCodeError((prevState) => !prevState);
-                }}
-            >
-                <Text style={styles.buttonText}>ПОДТВЕРДИТЬ</Text>
-            </Pressable>
-            <Pressable style={[styles.button, { backgroundColor: "#E7E8E9" }]}>
-                <Text style={[styles.buttonText, { color: "#909294" }]}>Повторить через 59 сек.</Text>
-            </Pressable>
-            <Pressable
-                style={[styles.button, { backgroundColor: "white" }]}
-                onPress={() => {
-                    loginStore.setStage("CHECK_PHONE_NUMBER");
-                }}
-            >
-                <Text style={[styles.buttonText, { color: "#FBAE18" }]}>ИЗМЕНИТЬ НОМЕР</Text>
-            </Pressable>
+            <ScrollView contentContainerStyle={styles.scrollViewWrapper}>
+                <Text style={styles.title}>Вход</Text>
+                <Text style={styles.description}>Код подтверждения отправлен на номер +7 {props.phoneNumber}</Text>
+                <TextInput
+                    style={isCodeError ? [styles.inputField, { borderColor: "#ED1C24" }] : styles.inputField}
+                    placeholder="Введите код подтверждения"
+                    placeholderTextColor="#999B9E"
+                    inputMode="numeric"
+                    maxLength={4}
+                />
+                {isCodeError && <Text style={styles.inputFieldError}>Неверный код</Text>}
+                <Text style={[styles.description, { marginTop: 25, color: "#5D5E60" }]}>
+                    Обратите внимание, что иногда СМС приходят с задержкой
+                </Text>
+                <Pressable
+                    style={styles.button}
+                    onPress={() => {
+                        setIsCodeError((prevState) => !prevState);
+                    }}
+                >
+                    <Text style={styles.buttonText}>ПОДТВЕРДИТЬ</Text>
+                </Pressable>
+                <Pressable style={[styles.button, { backgroundColor: "#E7E8E9" }]}>
+                    <Text style={[styles.buttonText, { color: "#909294" }]}>Повторить через 59 сек.</Text>
+                </Pressable>
+                <Pressable
+                    style={[styles.button, { backgroundColor: "white" }]}
+                    onPress={() => {
+                        navigationStore.navigate("/login/checkPhoneNumber");
+                    }}
+                >
+                    <Text style={[styles.buttonText, { color: "#FBAE18" }]}>ИЗМЕНИТЬ НОМЕР</Text>
+                </Pressable>
+            </ScrollView>
         </View>
     );
 });

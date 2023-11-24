@@ -5,13 +5,15 @@ class LoginStore {
 
     phoneNumber: string = "";
 
-    firstName: string = "";
     lastName: string = "";
+    firstName: string = "";
     fatherName: string = "";
 
-    dayOfBirth: number = 1;
-    monthOfBirth: number = 1;
-    yearOfBirth: number = 1901;
+    gender: null | "male" | "female" = null;
+
+    dayOfBirth: number = 0;
+    monthOfBirth: number = 0;
+    yearOfBirth: number = 0;
 
     constructor() {
         makeAutoObservable(this);
@@ -35,6 +37,10 @@ class LoginStore {
 
     setYearOfBirth(value: number) {
         this.yearOfBirth = value;
+    }
+
+    setGender(value: typeof this.gender) {
+        this.gender = value;
     }
 }
 

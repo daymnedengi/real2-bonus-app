@@ -2,20 +2,40 @@ import { FC, useState } from "react";
 import { StyleSheet, View, Text, TextInput, Pressable, Image, ScrollView } from "react-native";
 import { observer } from "mobx-react-lite";
 
-import loginStore from "../store/loginStore";
-
 // @ts-ignore
 import ArrowBottomImageSource from "../assets/arrow-bottom.png";
 
 import NumberPicker from "./NumberPicker";
 
+interface CreateProfileProps {
+    lastName: string;
+    setLastName: (value: string) => void;
+
+    firstName: string;
+    setFirstName: (value: string) => void;
+
+    fatherName: string;
+    setFatherName: (value: string) => void;
+
+    gender: "" | "male" | "female";
+    setGender: (value: "male" | "female") => void;
+
+    dayOfBirth: number;
+    setDayOfBirth: (value: number) => void;
+
+    monthOfBirth: number;
+    setMonthOfBirth: (value: number) => void;
+
+    yearOfBirth: number;
+    setYearOfBirth: (value: number) => void;
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        paddingTop: 30,
     },
-    scrollWrapper: {
+    scrollViewWrapper: {
         flexGrow: 1,
         justifyContent: "center",
     },
@@ -83,48 +103,98 @@ const styles = StyleSheet.create({
     },
 });
 
-const CreateProfile: FC = observer((): JSX.Element => {
+const CreateProfile: FC<CreateProfileProps> = observer((props): JSX.Element => {
     const [isShowPicker, setIsShowPicker] = useState<null | "day" | "month" | "year">(null);
+
+    const [isLastNameError, setIsLastNameError] = useState<boolean>(true);
+    const [isFirstNameError, setIsFirstNameError] = useState<boolean>(true);
+    const [isFatherNameError, setIsFatherNameError] = useState<boolean>(true);
+    const [isDateOfBirthError, setIsDateOfBirthError] = useState<boolean>(true);
+    const [isGenderError, setGenderError] = useState<boolean>(true);
 
     return (
         <>
             <View style={styles.container}>
-                <ScrollView contentContainerStyle={styles.scrollWrapper}>
+                <ScrollView contentContainerStyle={styles.scrollViewWrapper}>
                     <Text style={styles.title}>Данные профиля</Text>
-                    <TextInput style={styles.inputField} placeholder="Фамилия" placeholderTextColor="#999B9E" />
-                    <TextInput style={styles.inputField} placeholder="Имя" placeholderTextColor="#999B9E" />
-                    <TextInput style={styles.inputField} placeholder="Отчество" placeholderTextColor="#999B9E" />
+                    <TextInput
+                        style={[styles.inputField, isLastNameError && { borderColor: "#ED1C24" }]}
+                        placeholder="Фамилия"
+                        placeholderTextColor="#999B9E"
+                    />
+                    <TextInput
+                        style={[styles.inputField, isFirstNameError && { borderColor: "#ED1C24" }]}
+                        placeholder="Имя"
+                        placeholderTextColor="#999B9E"
+                    />
+                    <TextInput
+                        style={[styles.inputField, isFatherNameError && { borderColor: "#ED1C24" }]}
+                        placeholder="Отчество"
+                        placeholderTextColor="#999B9E"
+                    />
                     <Text style={styles.smallTitle}>Дата рождения</Text>
                     <View style={styles.dateOfBirthBlock}>
                         <Pressable
-                            style={[styles.dateOfBirthColumn, { flex: 1 }]}
+                            style={[
+                                styles.dateOfBirthColumn,
+                                { flex: 1 },
+                                isDateOfBirthError && { borderColor: "#ED1C24" },
+                            ]}
                             onPress={() => setIsShowPicker("day")}
                         >
-                            <Text style={styles.dateOfBirthTitle}>{loginStore.dayOfBirth}</Text>
+                            <Text style={styles.dateOfBirthTitle}>{props.dayOfBirth}</Text>
                             <Image style={styles.dateOfBirthImage} source={ArrowBottomImageSource} />
                         </Pressable>
                         <Pressable
-                            style={[styles.dateOfBirthColumn, { flex: 1 }]}
+                            style={[
+                                styles.dateOfBirthColumn,
+                                { flex: 1 },
+                                isDateOfBirthError && { borderColor: "#ED1C24" },
+                            ]}
                             onPress={() => setIsShowPicker("month")}
                         >
-                            <Text style={styles.dateOfBirthTitle}>{loginStore.monthOfBirth}</Text>
+                            <Text style={styles.dateOfBirthTitle}>{props.monthOfBirth}</Text>
                             <Image style={styles.dateOfBirthImage} source={ArrowBottomImageSource} />
                         </Pressable>
                         <Pressable
-                            style={[styles.dateOfBirthColumn, { flex: 2 }]}
+                            style={[
+                                styles.dateOfBirthColumn,
+                                { flex: 2 },
+                                isDateOfBirthError && { borderColor: "#ED1C24" },
+                            ]}
                             onPress={() => setIsShowPicker("year")}
                         >
-                            <Text style={styles.dateOfBirthTitle}>{loginStore.yearOfBirth}</Text>
+                            <Text style={styles.dateOfBirthTitle}>{props.yearOfBirth}</Text>
                             <Image style={styles.dateOfBirthImage} source={ArrowBottomImageSource} />
                         </Pressable>
                     </View>
                     <Text style={styles.smallTitle}>Пол</Text>
                     <View style={styles.genderBlock}>
-                        <Pressable style={[styles.button, { flex: 1, marginRight: 5 }]}>
-                            <Text style={styles.buttonText}>Муж.</Text>
+                        <Pressable
+                            style={[
+                                styles.button,
+                                { flex: 1, marginRight: 5 },
+                                isDateOfBirthError && { borderWidth: 1, borderColor: "#ED1C24" },
+                                props.gender != "male" && { backgroundColor: "#E7E8E9" },
+                            ]}
+                            onPress={() => props.setGender("male")}
+                        >
+                            <Text style={[styles.buttonText, props.gender != "male" && { color: "#909294" }]}>
+                                Муж.
+                            </Text>
                         </Pressable>
-                        <Pressable style={[styles.button, { flex: 1, marginLeft: 5, backgroundColor: "#E7E8E9" }]}>
-                            <Text style={[styles.buttonText, { color: "#909294" }]}>Жен.</Text>
+                        <Pressable
+                            style={[
+                                styles.button,
+                                { flex: 1, marginLeft: 5 },
+                                isDateOfBirthError && { borderWidth: 1, borderColor: "#ED1C24" },
+                                props.gender != "female" && { backgroundColor: "#E7E8E9" },
+                            ]}
+                            onPress={() => props.setGender("female")}
+                        >
+                            <Text style={[styles.buttonText, props.gender != "female" && { color: "#909294" }]}>
+                                Жен.
+                            </Text>
                         </Pressable>
                     </View>
                     <Pressable style={styles.button}>
@@ -136,21 +206,21 @@ const CreateProfile: FC = observer((): JSX.Element => {
                 <NumberPicker
                     values={Array.from({ length: 31 }, (_, i) => i + 1)}
                     closeFunc={() => setIsShowPicker(null)}
-                    onValueChange={(value) => loginStore.setDayOfBirth(value)}
+                    onValueChange={(value) => props.setDayOfBirth(value)}
                 />
             )}
             {isShowPicker == "month" && (
                 <NumberPicker
                     values={Array.from({ length: 12 }, (_, i) => i + 1)}
                     closeFunc={() => setIsShowPicker(null)}
-                    onValueChange={(value) => loginStore.setMonthOfBirth(value)}
+                    onValueChange={(value) => props.setMonthOfBirth(value)}
                 />
             )}
             {isShowPicker == "year" && (
                 <NumberPicker
                     values={Array.from({ length: 110 }, (_, i) => i + 1901)}
                     closeFunc={() => setIsShowPicker(null)}
-                    onValueChange={(value) => loginStore.setYearOfBirth(value)}
+                    onValueChange={(value) => props.setYearOfBirth(value)}
                 />
             )}
         </>
